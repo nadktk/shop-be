@@ -1,25 +1,20 @@
+const productsService = require('../services/products');
+const { successResponse, notFoundResponse } = require('../utils');
+
 /**
  * getProductsList
  * @param {*} event 
  * @returns 
  */
 module.exports = async (event) => {
+    const { productId } = event.pathParameters;
+    const product = await productsService.getOne(productId);
 
-    console.log(`Lambda get product by id invoked with`, event);
+    if (!product) {
+        return notFoundResponse({
+            message: 'Product not found'
+        })
+    }
 
-    return {
-        statusCode: 200,
-        body: JSON.stringify(
-            {
-                message: 'getProductById OK',
-                result: {
-                    id: 1,
-                    title: "Hello World",
-                    price: 123,
-                }
-            },
-            null,
-            2
-        ),
-    };
+    return successResponse(product);
 };
