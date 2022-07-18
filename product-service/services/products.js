@@ -10,4 +10,4 @@ class ProductsService {
     }
 }
 
-module.exports = new ProductsService();
+export default new ProductsService();

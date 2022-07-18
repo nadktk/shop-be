@@ -1,6 +1,6 @@
-const getProductById = require('../get-product-by-id');
-const utils = require('../../utils');
-const productsService = require('../../services/products');
+import { getProductById } from '../get-product-by-id';
+import utils from '../../utils';
+import productsService from '../../services/products';
 
 jest.mock('../../services/products', () => ({
     getOne: jest.fn()

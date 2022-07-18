@@ -1,12 +1,10 @@
-const productsService = require('../services/products');
-const { successResponse } = require('../utils');
+import productsService from '../services/products';
+import { successResponse } from '../utils';
 
 /**
  * getProductsList
- * @param {*} event 
- * @returns 
  */
-module.exports = async () => {
+export const getProductsList = async () => {
     const products = await productsService.getList();
 
     return successResponse(products);
