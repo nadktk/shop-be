@@ -1,12 +1,35 @@
-const productData = require('./products.json');
+import { client } from '../db/client';
 
 class ProductsService {
     async getList() {
-        return Promise.resolve(productData);
+        try {
+            await client.connect();
+                   
+            const products = await client.query(`
+                SELECT * FROM products;
+            `);
+
+            return Promise.resolve(products.rows);
+        } catch (e) {
+            console.log(e)
+            Promise.reject(e)
+        }
     }
 
     async getOne(productId) {
-        return Promise.resolve(productData.find(({id}) => id === productId));
+        try {
+            await client.connect();
+                   
+            const products = await client.query(`
+                SELECT * FROM products
+                WHERE id = '${productId}'::uuid
+            `);
+
+            return Promise.resolve(products.rows[0]);
+        } catch (e) {
+            console.log(e)
+            Promise.reject(e)
+        }
     }
 }
 
