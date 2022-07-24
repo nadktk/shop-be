@@ -1,0 +1,73 @@
+openapi: 3.0.1
+info:
+  title: Products service
+  version: 1.0.0
+  description: |-
+    This API is used to get products details
+paths:
+  /products:
+    get:
+      tags:
+        - Products
+      summary: Get a list of products
+      description: Get a list of products
+      responses:
+        '200':
+          description: Products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductListResult'
+  /products/{productId}:
+    get:
+      tags:
+        - Products
+      summary: Get a list of products
+      description: Get a list of products
+      parameters:
+        - name: productId
+          in: path
+          description: The unique ID of product
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductListItem'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    ProductListResult:
+      type: array
+      description: An array of products
+      items:
+        $ref: '#/components/schemas/ProductListItem'
+    ProductListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        count:
+          type: integer
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
