@@ -1,34 +1,83 @@
-import { client } from '../db/client';
+import { pool } from '../db/pool';
 
 class ProductsService {
     async getList() {
+        const client = await pool.connect();
         try {
-            await client.connect();
-                   
             const products = await client.query(`
-                SELECT * FROM products;
+                SELECT
+                    p.id,
+                    p.title,
+                    p.description,
+                    p.price,
+                    s.count
+                FROM products p
+                INNER JOIN stocks s
+                ON s.product_id = p.id
             `);
 
             return Promise.resolve(products.rows);
         } catch (e) {
-            console.log(e)
-            Promise.reject(e)
+            console.log(e);
+
+            throw e;
+        } finally {
+            client.release();
         }
     }
 
     async getOne(productId) {
-        try {
-            await client.connect();
-                   
+        const client = await pool.connect();
+        try {                 
             const products = await client.query(`
-                SELECT * FROM products
-                WHERE id = '${productId}'::uuid
-            `);
+                SELECT
+                    p.id,
+                    p.title,
+                    p.description,
+                    p.price,
+                    s.count
+                FROM products p
+                INNER JOIN stocks s
+                ON s.product_id = p.id
+                WHERE p.id = $1::uuid
+            `, [productId]);
 
             return Promise.resolve(products.rows[0]);
         } catch (e) {
-            console.log(e)
-            Promise.reject(e)
+            console.log(e);
+
+            throw e;
+        } finally {
+            client.release();
+        }
+        
+    }
+
+    async create({ count, price, title, description }) {
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+            const product = await client.query(`
+                INSERT INTO products VALUES(gen_random_uuid(), $1, $2, $3) RETURNING *`,
+                [title, description, price]
+            );
+            const stock = await client.query(
+                `INSERT INTO stocks VALUES($1, $2) RETURNING *`,
+                [product.rows[0].id, count]
+            );
+            await client.query('COMMIT');
+
+            return {
+                ...product.rows[0],
+                count: stock.rows[0].count,
+            };
+        } catch (e) {
+            await client.query('ROLLBACK');
+            console.log(e);
+
+            throw e
+        } finally {
+            client.release();
         }
     }
 }

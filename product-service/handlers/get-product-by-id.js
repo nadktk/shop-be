@@ -5,6 +5,7 @@ import { successResponse, notFoundResponse } from '../utils';
  * getProductsList
  */
 export const getProductById = async (event) => {
+
     const { productId } = event.pathParameters;
     const product = await productsService.getOne(productId);
 

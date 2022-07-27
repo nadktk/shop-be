@@ -34,3 +34,10 @@ functions:
           path: products/{productId}
           method: get
           cors: true
+  create-product:
+    handler: handler.createProduct
+    events:
+      - http:
+          path: products
+          method: post
+          cors: true

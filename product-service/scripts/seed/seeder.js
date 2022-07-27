@@ -1,4 +1,4 @@
-import { client } from '../../db/client.js';
+import { client } from '../../db/pool.js';
 import fs from 'fs';
 import readline from 'readline';
 
