@@ -5,6 +5,11 @@ import { successResponse, notFoundResponse } from '../utils';
  * getProductsList
  */
 export const getProductById = async (event) => {
+    console.log(`
+        get product by id function was invoked [${new Date()}]
+        with following parameter:
+        ${event.pathParameters.productId}
+    `);
 
     const { productId } = event.pathParameters;
     const product = await productsService.getOne(productId);

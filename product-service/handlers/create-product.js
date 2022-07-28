@@ -48,6 +48,11 @@ const validateProductBody = (payload) => {
  * createProduct
  */
 export const createProduct = async (event) => {
+    console.log(`
+        create product function was invoked [${new Date()}]
+        with following payload:
+        ${event.body}
+    `);
 
     const payload = JSON.parse(event.body);
     const { isValid, errors, productBody } = validateProductBody(payload);
