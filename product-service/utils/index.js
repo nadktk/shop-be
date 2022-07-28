@@ -42,3 +42,18 @@ module.exports.badRequest = (data) => {
         )
     }
 };
+
+module.exports.serverErrorResponse = (data) => {
+    return {
+        statusCode: 500,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': true,
+        },
+        body: JSON.stringify(
+            data,
+            null,
+            2
+        )
+    }
+};

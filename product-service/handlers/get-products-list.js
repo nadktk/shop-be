@@ -1,14 +1,22 @@
 import productsService from '../services/products';
-import { successResponse } from '../utils';
+import { successResponse, serverErrorResponse } from '../utils';
 
 /**
  * getProductsList
  */
 export const getProductsList = async () => {
-    console.log(`
-        get products list function was invoked [${new Date()}]
-    `);
-    const products = await productsService.getList();
+    try {
+        console.log(`
+            get products list function was invoked [${new Date()}]
+        `);
+        const products = await productsService.getList();
 
-    return successResponse(products);
+        return successResponse(products);
+    } catch (e) {
+        console.log(e);
+
+        return serverErrorResponse({
+            message: e.message,
+        });
+    }
 };

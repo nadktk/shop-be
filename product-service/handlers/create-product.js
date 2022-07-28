@@ -48,22 +48,30 @@ const validateProductBody = (payload) => {
  * createProduct
  */
 export const createProduct = async (event) => {
-    console.log(`
-        create product function was invoked [${new Date()}]
-        with following payload:
-        ${event.body}
-    `);
+    try {
+        console.log(`
+            create product function was invoked [${new Date()}]
+            with following payload:
+            ${event.body}
+        `);
 
-    const payload = JSON.parse(event.body);
-    const { isValid, errors, productBody } = validateProductBody(payload);
-    if (!isValid) {
-        return badRequest({
-            message: 'Incorrect product data',
-            errors,
+        const payload = JSON.parse(event.body);
+        const { isValid, errors, productBody } = validateProductBody(payload);
+        if (!isValid) {
+            return badRequest({
+                message: 'Incorrect product data',
+                errors,
+            });
+        }
+
+        const product = await productsService.create(productBody);
+
+        return successResponse(product, 201);
+    } catch (e) {
+        console.log(e);
+
+        return serverErrorResponse({
+            message: e.message,
         });
     }
-
-    const product = await productsService.create(productBody);
-
-    return successResponse(product, 201);
 };

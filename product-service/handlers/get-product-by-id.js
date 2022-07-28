@@ -5,20 +5,28 @@ import { successResponse, notFoundResponse } from '../utils';
  * getProductsList
  */
 export const getProductById = async (event) => {
-    console.log(`
-        get product by id function was invoked [${new Date()}]
-        with following parameter:
-        ${event.pathParameters.productId}
-    `);
+    try {
+        console.log(`
+            get product by id function was invoked [${new Date()}]
+            with following parameter:
+            ${event.pathParameters.productId}
+        `);
 
-    const { productId } = event.pathParameters;
-    const product = await productsService.getOne(productId);
+        const { productId } = event.pathParameters;
+        const product = await productsService.getOne(productId);
 
-    if (!product) {
-        return notFoundResponse({
-            message: 'Product not found'
-        })
+        if (!product) {
+            return notFoundResponse({
+                message: 'Product not found'
+            })
+        }
+
+        return successResponse(product);
+    } catch (e) {
+        console.log(e);
+
+        return serverErrorResponse({
+            message: e.message,
+        });
     }
-
-    return successResponse(product);
 };
