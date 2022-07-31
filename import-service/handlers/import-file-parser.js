@@ -7,7 +7,11 @@ export const importFileParser = async (event) => {
     try {
         console.log(`
             import file parser function was invoked [${new Date()}]
-            with event ${event}
+            with event ${JSON.stringify(
+                event,
+                null,
+                2
+            )}
         `);
 
         return successResponse('Hello world importFileParser');

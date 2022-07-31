@@ -17,5 +17,8 @@
     "deploy": "sls deploy"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1185.0"
+  }
 }
