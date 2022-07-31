@@ -3,6 +3,7 @@ import csvParser from 'csv-parser';
 
 const { REGION, BUCKET } = process.env;
 const UPLOAD_PATH = 'uploaded';
+const PARSED_PATH = 'parsed';
 
 class S3Service {
     constructor(options) {
@@ -47,8 +48,30 @@ class S3Service {
         });
 
         await fileStream;
+        await this.copyFile(key);
 
         return result;
+    }
+
+    async copyFile(key) {
+        const copyParams = {
+            Bucket: BUCKET,
+            CopySource: `${BUCKET}/${key}`,
+            Key: key.replace(UPLOAD_PATH, PARSED_PATH),
+        };
+        const deleteParams = {
+            Bucket: BUCKET,
+            Key: key,
+        };
+
+        try {
+            await this.s3.copyObject(copyParams).promise();
+            await this.s3.deleteObject(deleteParams).promise();
+        } catch (err) {
+            console.error('Could not move parsed file', err);
+        }
+
+        console.error('Parsed file successfully moved to /parsed folder');
     }
 }
 
