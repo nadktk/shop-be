@@ -5,7 +5,7 @@ module.exports.successResponse = (data, statusCode = 200) => {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Credentials': true,
         },
-        body: JSON.stringify(
+        body: typeof data === 'string' ? data : JSON.stringify(
             data,
             null,
             2

@@ -1,13 +1,5 @@
-import { S3 } from 'aws-sdk';
-import csvParser from 'csv-parser';
-
-import { successResponse, serverErrorResponse } from '../../shared/utils';
-
-const { REGION, BUCKET } = process.env;
-
-const s3 = new S3({
-    region: REGION,
-});
+import s3Service from '../services/s3';
+import { successResponse, serverErrorResponse, badRequest } from '../../shared/utils';
 
 /**
  * importFileParser
@@ -23,32 +15,17 @@ export const importFileParser = async (event) => {
             )}
         `);
 
-        const key = event.Records[0].s3.object.key;
+        const key = event.Records && event.Records[0]?.s3?.object?.key;
 
-        const params = {
-            Bucket: BUCKET,
-            Key: key,
+        if (!key) {
+            return badRequest({
+                message: 'No file key value',
+            });
         }
 
-        const s3Srteam = s3.getObject(params).createReadStream();
-        const result = [];
+        await s3Service.parseCsvFile(key);
 
-        const fileStream = new Promise((res, rej) => {
-            s3Srteam.pipe(csvParser())
-                .on('data', (data) => {
-                    console.log(data);
-                    result.push(data);
-                })
-                .on('error', (err) => {
-                    console.log(err);
-                    rej(err);
-                })
-                .on('end', () => res());
-        });
-
-        await fileStream;
-
-        return successResponse(result);
+        return successResponse('ok');
     } catch (e) {
         console.log(e);
 

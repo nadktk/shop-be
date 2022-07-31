@@ -1,6 +1,5 @@
 import { pool } from '../db/pool';
 
-
 class ProductsService {
     async getList() {
         const client = await pool.connect();
