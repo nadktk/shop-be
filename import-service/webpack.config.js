@@ -20,14 +20,10 @@ module.exports = {
         }
       ]
     },
-    // plugins: [
-    //   new webpack.IgnorePlugin({
-    //     resourceRegExp: /^pg-native$/
-    //   })
-    // ],
     output: {
       libraryTarget: 'commonjs',
       path: path.join(__dirname, '.webpack'),
       filename: '[name].js'
     }
   };
+  
