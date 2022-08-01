@@ -1,5 +1,5 @@
 import productsService from '../services/products';
-import { successResponse, serverErrorResponse } from '../utils';
+import { successResponse, serverErrorResponse } from '../../shared/utils';
 
 /**
  * getProductsList

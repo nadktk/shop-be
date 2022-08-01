@@ -1,5 +1,5 @@
 import productsService from '../services/products';
-import { successResponse, badRequest } from '../utils';
+import { successResponse, badRequest } from '../../shared/utils';
 
 const validateProductBody = (payload) => {
     const cleanTitle = payload.title && String(payload.title).trim();
