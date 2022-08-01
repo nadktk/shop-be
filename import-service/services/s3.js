@@ -71,7 +71,7 @@ class S3Service {
             console.error('Could not move parsed file', err);
         }
 
-        console.error('Parsed file successfully moved to /parsed folder');
+        console.log('Parsed file successfully moved to /parsed folder');
     }
 }
 
