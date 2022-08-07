@@ -1,12 +1,12 @@
 import { getProductsList } from '../get-products-list';
-import utils from '../../utils';
+import utils from '../../../shared/utils';
 import productsService from '../../services/products';
 
 jest.mock('../../services/products', () => ({
     getList: jest.fn()
 }));
 
-jest.mock('../../utils', () => ({
+jest.mock('../../../shared/utils', () => ({
     successResponse: jest.fn(),
 }));
 
