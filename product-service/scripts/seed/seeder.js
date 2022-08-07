@@ -1,6 +1,6 @@
-import { client } from '../../db/pool.js';
 import fs from 'fs';
 import readline from 'readline';
+import { pool as client } from '../../db/pool';
 
 const SUCCESS = 'Data created successfully';
 const FAIL = 'Something went wrong';
@@ -8,30 +8,31 @@ const EXIT = 'Exit script. Bye!';
 const WARNING = `
     This script will delete all products in the database (if it is not empty)
     and populate products table with seed values.
-    Are you sure? Type \'yes\' to continue:
+    Are you sure? Type 'yes' to continue:
 > `;
 
 const logger = (...args) => {
+    /* eslint-disable no-console */
     console.log('[SEEDER]', ...args);
-}
+};
 
 const main = async () => {
     await client.connect();
     const sql = await fs.promises.readFile('./scripts/seed/seed.sql', {
-        encoding: 'ascii'
+        encoding: 'ascii',
     });
-    await client.query(sql);    
+    await client.query(sql);
     await client.end();
-}
+};
 
 const byeFunction = () => {
     logger(EXIT);
     process.exit(0);
-}
+};
 
 const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
+    input: process.stdin,
+    output: process.stdout,
 });
 
 rl.on('close', byeFunction);

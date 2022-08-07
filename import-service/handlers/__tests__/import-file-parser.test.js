@@ -1,9 +1,9 @@
-import { importFileParser } from '../import-file-parser';
 import utils from '../../../shared/utils';
+import { importFileParser } from '../import-file-parser';
 import s3Service from '../../services/s3';
 
 jest.mock('../../services/s3', () => ({
-    parseCsvFile: jest.fn()
+    parseCsvFile: jest.fn(),
 }));
 
 jest.mock('../../../shared/utils', () => ({
@@ -13,23 +13,22 @@ jest.mock('../../../shared/utils', () => ({
 }));
 
 describe('tests for importFileParser handler', () => {
-
     afterEach(() => jest.clearAllMocks());
 
     it('should parse csv file', async () => {
         const mockedFileName = 'testFileName.csv';
         s3Service.parseCsvFile.mockReturnValue();
-    
+
         await importFileParser({
             Records: [{
                 s3: {
                     object: {
-                        key: mockedFileName
-                    }
-                }
-            }]
+                        key: mockedFileName,
+                    },
+                },
+            }],
         });
-    
+
         expect(utils.successResponse).toBeCalledTimes(1);
         expect(utils.successResponse).toHaveBeenCalledWith('ok');
     });
@@ -39,18 +38,18 @@ describe('tests for importFileParser handler', () => {
         const mockedError = 'Something went wrong';
         s3Service.parseCsvFile.mockImplementation(() => {
             throw new Error(mockedError);
-          });
-    
+        });
+
         await importFileParser({
             Records: [{
                 s3: {
                     object: {
-                        key: mockedFileName
-                    }
-                }
-            }]
+                        key: mockedFileName,
+                    },
+                },
+            }],
         });
-    
+
         expect(utils.serverErrorResponse).toBeCalledTimes(1);
         expect(utils.serverErrorResponse).toHaveBeenCalledWith({
             message: mockedError,
@@ -59,9 +58,9 @@ describe('tests for importFileParser handler', () => {
 
     it('should return bad request', async () => {
         s3Service.parseCsvFile.mockReturnValue();
-    
+
         await importFileParser({});
-    
+
         expect(utils.badRequest).toBeCalledTimes(1);
         expect(utils.badRequest).toHaveBeenCalledWith({
             message: 'No file key value',

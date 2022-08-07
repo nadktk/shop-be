@@ -15,9 +15,9 @@
     "webpack": "^5.73.0"
   },
   "scripts": {
-    "test": "jest",
-    "test:coverage": "jest --coverage",
-    "coverage": "open coverage/index.html",
+    "test": "NODE_ENV=test jest",
+    "test:coverage": "NODE_ENV=test jest --coverage",
+    "test:open": "open coverage/index.html",
     "deploy": "sls deploy"
   },
   "author": "",

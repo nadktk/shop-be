@@ -1,19 +1,20 @@
-import productsService from '../services/products';
+import { Logger } from '../../shared/logger';
 import { successResponse, serverErrorResponse } from '../../shared/utils';
+import productsService from '../services/products';
+
+const logger = new Logger('getProductsList');
 
 /**
  * getProductsList
  */
 export const getProductsList = async () => {
     try {
-        console.log(`
-            get products list function was invoked [${new Date()}]
-        `);
+        logger.log('get products list function invocation');
         const products = await productsService.getList();
 
         return successResponse(products);
     } catch (e) {
-        console.log(e);
+        logger.error(e);
 
         return serverErrorResponse({
             message: e.message,

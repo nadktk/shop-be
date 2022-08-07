@@ -7,27 +7,27 @@ module.exports = {
     target: 'node',
     mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
     module: {
-      rules: [
-        {
-          test: /\.js$/,
-          include: __dirname,
-          exclude: /node_modules/,
-          use: [
+        rules: [
             {
-              loader: 'babel-loader'
-            }
-          ]
-        }
-      ]
+                test: /\.js$/,
+                include: __dirname,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                    },
+                ],
+            },
+        ],
     },
     plugins: [
-      new webpack.IgnorePlugin({
-        resourceRegExp: /^pg-native$/
-      })
+        new webpack.IgnorePlugin({
+            resourceRegExp: /^pg-native$/,
+        }),
     ],
     output: {
-      libraryTarget: 'commonjs',
-      path: path.join(__dirname, '.webpack'),
-      filename: '[name].js'
-    }
-  };
+        libraryTarget: 'commonjs',
+        path: path.join(__dirname, '.webpack'),
+        filename: '[name].js',
+    },
+};

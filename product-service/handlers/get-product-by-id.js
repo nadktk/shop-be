@@ -1,29 +1,36 @@
+import { Logger } from '../../shared/logger';
+import {
+    successResponse,
+    notFoundResponse,
+    serverErrorResponse,
+} from '../../shared/utils';
 import productsService from '../services/products';
-import { successResponse, notFoundResponse } from '../../shared/utils';
+
+const logger = new Logger('getProductById');
 
 /**
  * getProductsList
  */
 export const getProductById = async (event) => {
     try {
-        console.log(`
-            get product by id function was invoked [${new Date()}]
-            with following parameter:
-            ${event.pathParameters.productId}
-        `);
+        logger.log(`
+        get product by id function invocation
+        with following parameter:
+        ${event.pathParameters.productId}
+    `);
 
         const { productId } = event.pathParameters;
         const product = await productsService.getOne(productId);
 
         if (!product) {
             return notFoundResponse({
-                message: 'Product not found'
-            })
+                message: 'Product not found',
+            });
         }
 
         return successResponse(product);
     } catch (e) {
-        console.log(e);
+        logger.error(e);
 
         return serverErrorResponse({
             message: e.message,

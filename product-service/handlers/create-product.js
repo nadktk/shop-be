@@ -1,10 +1,17 @@
+import {
+    successResponse,
+    badRequest,
+    serverErrorResponse,
+} from '../../shared/utils';
 import productsService from '../services/products';
-import { successResponse, badRequest } from '../../shared/utils';
+import { Logger } from '../../shared/logger';
+
+const logger = new Logger('createProduct');
 
 const validateProductBody = (payload) => {
     const cleanTitle = payload.title && String(payload.title).trim();
     let isValid = true;
-    let errors = [];
+    const errors = [];
 
     if (!(cleanTitle && cleanTitle.length >= 3)) {
         isValid = false;
@@ -29,7 +36,7 @@ const validateProductBody = (payload) => {
             error: 'price is a required field and should be positive integer value',
         });
     }
-    
+
     return {
         isValid,
         errors: errors.length ? errors : undefined,
@@ -39,17 +46,17 @@ const validateProductBody = (payload) => {
                 count: payload.count,
                 price: payload.price,
                 description: payload.description,
-            }
-        })
+            },
+        }),
     };
-}
+};
 
 /**
  * createProduct
  */
 export const createProduct = async (event) => {
     try {
-        console.log(`
+        logger.log(`
             create product function was invoked [${new Date()}]
             with following payload:
             ${event.body}
@@ -68,7 +75,7 @@ export const createProduct = async (event) => {
 
         return successResponse(product, 201);
     } catch (e) {
-        console.log(e);
+        logger.error(e);
 
         return serverErrorResponse({
             message: e.message,

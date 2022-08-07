@@ -1,5 +1,6 @@
 import { S3 } from 'aws-sdk';
 import csvParser from 'csv-parser';
+import { Logger } from '../../shared/logger';
 
 const { REGION, BUCKET } = process.env;
 const UPLOAD_PATH = 'uploaded';
@@ -7,7 +8,8 @@ const PARSED_PATH = 'parsed';
 
 class S3Service {
     constructor(options) {
-        this.s3 = new S3(options); 
+        this.s3 = new S3(options);
+        this.logger = new Logger(this.constructor.name);
     }
 
     prepareSignedUrl(fileName) {
@@ -15,8 +17,8 @@ class S3Service {
             Bucket: BUCKET,
             Key: `${UPLOAD_PATH}/${fileName}`,
             Expires: 60,
-            ContentType: 'text/csv'
-        }
+            ContentType: 'text/csv',
+        };
 
         const url = this.s3.getSignedUrl('putObject', params);
 
@@ -27,7 +29,7 @@ class S3Service {
         const params = {
             Bucket: BUCKET,
             Key: key,
-        }
+        };
 
         const s3Srteam = this.s3.getObject(params).createReadStream();
         const result = [];
@@ -35,12 +37,12 @@ class S3Service {
         const fileStream = new Promise((res, rej) => {
             s3Srteam.pipe(csvParser())
                 .on('data', (data) => {
-                    console.log(data);
+                    this.logger.log(data);
 
                     result.push(data);
                 })
                 .on('error', (err) => {
-                    console.log(err);
+                    this.logger.error(err);
 
                     rej(err);
                 })
@@ -68,10 +70,10 @@ class S3Service {
             await this.s3.copyObject(copyParams).promise();
             await this.s3.deleteObject(deleteParams).promise();
         } catch (err) {
-            console.error('Could not move parsed file', err);
+            this.logger.error('Could not move parsed file', err);
         }
 
-        console.log('Parsed file successfully moved to /parsed folder');
+        this.logger.log('Parsed file successfully moved to /parsed folder');
     }
 }
 
